@@ -1,50 +1,29 @@
-# Welcome to your Expo app 👋
+# ⚾ ScoreBaseball Pro
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+¡Bienvenido a **ScoreBaseball Pro**! Una aplicación móvil desarrollada en React Native (Expo) diseñada para llevar la anotación, el control de estadísticas y la gestión de alineaciones de partidos de béisbol de manera digital, rápida y profesional.
 
-## Get started
+## ✨ Características Principales
 
-1. Install dependencies
+- **Gestión de Lineups:** Configura los equipos (Local y Visitante), asigna posiciones fijas y registra a los jugadores de reserva.
+- **Play-by-Play Dinámico:** Registra bolas, strikes, outs, hits y carreras con una botonera intuitiva.
+- **Diamante Interactivo:** Visualiza el estado de las bases en tiempo real y gestiona a los corredores.
+- **Gestión de Sustituciones:** Cambia bateadores y lanzadores en pleno juego, manteniendo el historial de estadísticas.
+- **Reportes en PDF:** Exporta la hoja de anotación y estadísticas completas (bateo, pitcheo y asistencia) en un archivo PDF listo para compartir.
+- **Autoguardado Local:** El progreso del partido se guarda automáticamente en el dispositivo para evitar pérdidas de datos.
 
+## 🛠️ Tecnologías Utilizadas
+
+- [React Native](https://reactnative.dev/)
+- [Expo](https://expo.dev/) (Expo Router)
+- React Context API (Para la gestión del estado global)
+- AsyncStorage (Persistencia de datos local)
+- Expo Print & Sharing (Generación y distribución de PDFs)
+
+## 🚀 Instalación y Uso (Desarrolladores)
+
+Si deseas correr este proyecto en tu entorno local para contribuir, sigue estos pasos:
+
+1. **Clona el repositorio:**
    ```bash
-   npm install
+   git clone [https://github.com/oscardjld/scorebaseball-pro.git](https://github.com/oscardjld/scorebaseball-pro.git)
    ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.

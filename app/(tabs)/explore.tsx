@@ -1,112 +1,139 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import React from 'react';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useBaseballContext } from '../../context/BaseballContext';
 
-import { Collapsible } from '@/components/ui/collapsible';
-import { ExternalLink } from '@/components/external-link';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Fonts } from '@/constants/theme';
+export default function ExploreScreen() {
+  const { lineups, pitchersHistory, teamAbbr, activePitchers, statsAcumuladas } = useBaseballContext();
 
-export default function TabTwoScreen() {
+  const renderTable = (teamKey: 'away' | 'home') => {
+    // 1. Unimos activos y retirados
+    const todos = [...(statsAcumuladas[teamKey] || []), ...(lineups[teamKey] || [])];
+
+    // 2. Ordenamos por turno al bate (orderPos) 
+    // Si tienen el mismo orderPos, el que entró después (isSub) va debajo
+    const listaOrdenada = todos.sort((a, b) => {
+      if (a.orderPos !== b.orderPos) return a.orderPos - b.orderPos;
+      return a.entroInning ? 1 : -1;
+    });
+
+    return (
+      <View style={styles.table}>
+        <View style={styles.tableHeader}>
+          <Text style={[styles.headerCell, { flex: 0.5 }]}>#</Text>
+          <Text style={[styles.headerCell, { flex: 3, textAlign: 'left' }]}>BATEADOR ({teamAbbr[teamKey]})</Text>
+          <Text style={styles.headerCell}>POS</Text>
+          <Text style={styles.headerCell}>VB</Text>
+          <Text style={styles.headerCell}>H</Text>
+          <Text style={styles.headerCell}>AVG</Text>
+        </View>
+
+        {listaOrdenada.length > 0 ? (
+          listaOrdenada.map((player, i) => (
+            <View key={i} style={[
+              styles.tableRow,
+              player.salioInning && { backgroundColor: '#161b22', opacity: 0.7 }
+            ]}>
+              {/* Indicador de Turno o Sustitución */}
+              <Text style={[styles.cell, { flex: 0.5, color: '#4b5563' }]}>
+                {player.isSub ? "↳" : player.orderPos}
+              </Text>
+
+              <View style={{ flex: 3 }}>
+                <Text style={[styles.cell, { color: '#fff', textAlign: 'left', fontWeight: player.salioInning ? '400' : 'bold' }]}>
+                  {player.name}
+                </Text>
+                {player.salioInning && (
+                  <Text style={{ color: '#ef4444', fontSize: 7, fontWeight: 'bold' }}>
+                    SALIÓ INN {player.salioInning}
+                  </Text>
+                )}
+                {player.isSub && !player.salioInning && (
+                  <Text style={{ color: '#10b981', fontSize: 7, fontWeight: 'bold' }}>
+                    ENTRÓ INN {player.entroInning}
+                  </Text>
+                )}
+              </View>
+
+              {/* Columna de Posición (Dinámica) */}
+              <Text style={[styles.cell, { color: '#fbbf24' }]}>{player.pos || '--'}</Text>
+
+              <Text style={styles.cell}>{player.ab}</Text>
+              <Text style={styles.cell}>{player.h}</Text>
+              <Text style={[styles.cell, { color: '#06b6d4' }]}>{player.avg}</Text>
+            </View>
+          ))
+        ) : (
+          <Text style={styles.noData}>No hay lineup cargado</Text>
+        )}
+      </View>
+    );
+  };
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={
-        <IconSymbol
-          size={310}
-          color="#808080"
-          name="chevron.left.forwardslash.chevron.right"
-          style={styles.headerImage}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText
-          type="title"
-          style={{
-            fontFamily: Fonts.rounded,
-          }}>
-          Explore
-        </ThemedText>
-      </ThemedView>
-      <ThemedText>This app includes example code to help you get started.</ThemedText>
-      <Collapsible title="File-based routing">
-        <ThemedText>
-          This app has two screens:{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-        </ThemedText>
-        <ThemedText>
-          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-          sets up the tab navigator.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Android, iOS, and web support">
-        <ThemedText>
-          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-          <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
-        </ThemedText>
-      </Collapsible>
-      <Collapsible title="Images">
-        <ThemedText>
-          For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
-          different screen densities
-        </ThemedText>
-        <Image
-          source={require('@/assets/images/react-logo.png')}
-          style={{ width: 100, height: 100, alignSelf: 'center' }}
-        />
-        <ExternalLink href="https://reactnative.dev/docs/images">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Light and dark mode components">
-        <ThemedText>
-          This template has light and dark mode support. The{' '}
-          <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
-          what the user&apos;s current color scheme is, and so you can adjust UI colors accordingly.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Animations">
-        <ThemedText>
-          This template includes an example of an animated component. The{' '}
-          <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
-          the powerful{' '}
-          <ThemedText type="defaultSemiBold" style={{ fontFamily: Fonts.mono }}>
-            react-native-reanimated
-          </ThemedText>{' '}
-          library to create a waving hand animation.
-        </ThemedText>
-        {Platform.select({
-          ios: (
-            <ThemedText>
-              The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
-              component provides a parallax effect for the header image.
-            </ThemedText>
-          ),
-        })}
-      </Collapsible>
-    </ParallaxScrollView>
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={{ padding: 15 }}>
+        <Text style={styles.sectionTitle}>ESTADÍSTICAS DE BATEO</Text>
+
+        {renderTable('away')}
+        <View style={{ height: 25 }} />
+        {renderTable('home')}
+
+        <Text style={[styles.sectionTitle, { marginTop: 35 }]}>HISTORIAL DE LANZADORES</Text>
+        <View style={styles.pitcherList}>
+          {/* Pitchers Activos */}
+          {['away', 'home'].map((side) => {
+            const p = activePitchers[side];
+            return (
+              <View key={`active-${side}`} style={[styles.pitcherCard, { borderColor: '#10b981' }]}>
+                <View>
+                  <Text style={styles.pName}>{p.name} (ACT)</Text>
+                  <Text style={styles.pTeam}>{teamAbbr[side]}</Text>
+                </View>
+                <View style={styles.pStats}>
+                  <Text style={styles.pStatItem}>P: {p.count}</Text>
+                  <Text style={styles.pStatItem}>H: {p.hits}</Text>
+                  <Text style={styles.pStatItem}>K: {p.k}</Text>
+                  <Text style={styles.pStatItem}>BB: {p.bb}</Text>
+                </View>
+              </View>
+            );
+          })}
+
+          {/* Historial de Relevos */}
+          {pitchersHistory.map((p, i) => (
+            <View key={`hist-${i}`} style={styles.pitcherCard}>
+              <View>
+                <Text style={styles.pName}>{p.name}</Text>
+                <Text style={styles.pTeam}>{p.team} (INN {p.finalInning})</Text>
+              </View>
+              <View style={styles.pStats}>
+                <Text style={styles.pStatItem}>P: {p.count}</Text>
+                <Text style={styles.pStatItem}>H: {p.hits}</Text>
+                <Text style={styles.pStatItem}>K: {p.k}</Text>
+                <Text style={styles.pStatItem}>BB: {p.bb}</Text>
+              </View>
+            </View>
+          ))}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    gap: 8,
-  },
+  container: { flex: 1, backgroundColor: '#050505' },
+  sectionTitle: { color: '#06b6d4', fontSize: 20, fontWeight: '900', marginBottom: 15, fontStyle: 'italic' },
+  table: { backgroundColor: '#111827', borderRadius: 12, overflow: 'hidden', borderWidth: 1, borderColor: '#1f2937' },
+  tableHeader: { flexDirection: 'row', backgroundColor: '#1f2937', padding: 10 },
+  headerCell: { color: '#4b5563', fontSize: 10, fontWeight: 'bold', flex: 1, textAlign: 'center' },
+  tableRow: { flexDirection: 'row', padding: 12, borderBottomWidth: 1, borderBottomColor: '#1f2937', alignItems: 'center' },
+  cell: { color: '#9ca3af', fontSize: 11, flex: 1, textAlign: 'center', fontWeight: '600' },
+  pitcherList: { gap: 10 },
+  pitcherCard: { backgroundColor: '#111827', padding: 15, borderRadius: 12, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderWidth: 1, borderColor: '#1f2937' },
+  pName: { color: '#fff', fontSize: 15, fontWeight: 'bold' },
+  pTeam: { color: '#06b6d4', fontSize: 9, fontWeight: 'bold' },
+  pStats: { flexDirection: 'row', gap: 10 },
+  pStatItem: { color: '#fff', fontSize: 11, fontWeight: 'bold' },
+  noData: { color: '#374151', fontSize: 12, fontStyle: 'italic', padding: 20, textAlign: 'center' }
 });
