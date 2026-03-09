@@ -13,13 +13,14 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.osrusso.scorebaseballpro",
       "adaptiveIcon": {
         "backgroundColor": "#000000",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
-      "edgeToEdgeEnabled": true,
+      "edgeToEdgeEnabled": false,
       "predictiveBackGestureEnabled": false,
       "permissions": [
         "android.permission.RECORD_AUDIO",
@@ -51,18 +52,12 @@
       "typedRoutes": true,
       "reactCompiler": true
     },
+    "owner": "osrusso",
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "14af80b7-8b4a-408b-933f-993d48112c87"
+        "projectId": "10029fb0-691f-4c46-aa58-6ac24b6d1e18"
       }
-    },
-    "owner": "osrusso",
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
-    "updates": {
-      "url": "https://u.expo.dev/14af80b7-8b4a-408b-933f-993d48112c87"
     }
   }
 }
